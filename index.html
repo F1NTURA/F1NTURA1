@@ -1,13 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Получение координат</title>
 </head>
-
 <body>
+    <h1>Ваши координаты:</h1>
+    <p>Широта: <span id="latitude">Неизвестно</span></p>
+    <p>Долгота: <span id="longitude">Неизвестно</span></p>
 
+    <button id="getLocation">Получить координаты</button>
 
-<script src="js.js" defer></script>
+    <script>
+        document.getElementById('getLocation').addEventListener('click', function () {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    // Отображаем координаты на странице
+                    document.getElementById('latitude').textContent = latitude;
+                    document.getElementById('longitude').textContent = longitude;
+
+                    // Пример: отправка данных на сервер
+                    fetch('save_location.php', {  // Пример с сервером, PHP обработка
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            latitude: latitude,
+                            longitude: longitude
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log('Данные отправлены на сервер', data);
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                    });
+                }, function(error) {
+                    console.error('Ошибка получения геопозиции', error);
+                });
+            } else {
+                alert('Геолокация не поддерживается вашим браузером');
+            }
+        });
+    </script>
 </body>
-
 </html>
