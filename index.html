@@ -30,14 +30,13 @@
                     document.getElementById('longitude').textContent = longitude;
                     document.getElementById('accuracy').textContent = accuracy + ' м';
 
-                    // Выводим данные в консоль и на страницу
-                    updateConsoleAndPage('Широта:', latitude);
-                    updateConsoleAndPage('Долгота:', longitude);
-                    updateConsoleAndPage('Точность:', accuracy + ' м');
+                    // Выводим данные в консоль
+                    console.log('Широта:', latitude);
+                    console.log('Долгота:', longitude);
+                    console.log('Точность:', accuracy + ' м');
 
                     // Если точность слишком низкая, пробуем снова
                     if (accuracy > 20) {  // Если точность больше 20 метров, пробуем снова
-                        updateConsoleAndPage('Точность низкая, повторяем запрос...');
                         console.log('Точность низкая, повторяем запрос...');
                         getExactLocation();
                     }
@@ -51,14 +50,6 @@
                     maximumAge: 0               // Не использовать кэшированные данные
                 }
             );
-        }
-
-        // Функция для обновления консоли и страницы
-        function updateConsoleAndPage(label, value) {
-            console.log(label, value);
-            const para = document.createElement('p');
-            para.textContent = `${label} ${value}`;
-            document.body.appendChild(para);
         }
     </script>
 </body>
