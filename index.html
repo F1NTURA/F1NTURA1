@@ -3,51 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Получение координат</title>
+    <title>Получение точных координат</title>
 </head>
 <body>
-    <h1>Ваши координаты:</h1>
+    <h1>Ваши точные координаты:</h1>
     <p>Широта: <span id="latitude">Неизвестно</span></p>
     <p>Долгота: <span id="longitude">Неизвестно</span></p>
+    <p>Точность: <span id="accuracy">Неизвестно</span></p>
 
-    <button id="getLocation">Получить координаты</button>
+    <button id="getLocation">Получить точные координаты</button>
 
     <script>
         document.getElementById('getLocation').addEventListener('click', function () {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(function(position) {
+            getExactLocation();
+        });
+
+        function getExactLocation() {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const accuracy = position.coords.accuracy; // Точность в метрах
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
 
-                    // Отображаем координаты на странице
+                    // Выводим данные на страницу
                     document.getElementById('latitude').textContent = latitude;
                     document.getElementById('longitude').textContent = longitude;
+                    document.getElementById('accuracy').textContent = accuracy + ' м';
 
-                    // Пример: отправка данных на сервер
-                    fetch('save_location.php', {  // Пример с сервером, PHP обработка
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            latitude: latitude,
-                            longitude: longitude
-                        })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('Данные отправлены на сервер', data);
-                    })
-                    .catch(error => {
-                        console.error('Ошибка:', error);
-                    });
-                }, function(error) {
-                    console.error('Ошибка получения геопозиции', error);
-                });
-            } else {
-                alert('Геолокация не поддерживается вашим браузером');
-            }
-        });
+                    // Выводим данные в консоль и на страницу
+                    updateConsoleAndPage('Широта:', latitude);
+                    updateConsoleAndPage('Долгота:', longitude);
+                    updateConsoleAndPage('Точность:', accuracy + ' м');
+
+                    // Если точность слишком низкая, пробуем снова
+                    if (accuracy > 20) {  // Если точность больше 20 метров, пробуем снова
+                        updateConsoleAndPage('Точность низкая, повторяем запрос...');
+                        console.log('Точность низкая, повторяем запрос...');
+                        getExactLocation();
+                    }
+                },
+                (error) => {
+                    console.error('Ошибка получения геоданных:', error);
+                },
+                {
+                    enableHighAccuracy: true,   // Включаем высокую точность
+                    timeout: 10000,             // Время ожидания запроса (10 секунд)
+                    maximumAge: 0               // Не использовать кэшированные данные
+                }
+            );
+        }
+
+        // Функция для обновления консоли и страницы
+        function updateConsoleAndPage(label, value) {
+            console.log(label, value);
+            const para = document.createElement('p');
+            para.textContent = `${label} ${value}`;
+            document.body.appendChild(para);
+        }
     </script>
 </body>
 </html>
