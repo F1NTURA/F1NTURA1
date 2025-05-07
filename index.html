@@ -1,13 +1,99 @@
 <!DOCTYPE html>
-
-<html>
-
-<header>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
     <title>Для Ангелины</title>
-    <link href="style.css" rel="stylesheet">
-    <meta  charset="UTF-8">
-</header>
+    <style>
+        body {
+            background-color: rgb(239, 132, 225);
+            height: 100vh;
+            width: 100vw;
+            margin: 0;
+        }
 
+        .text {
+            font-size: 100px;
+            color: white;
+            font-family: sans-serif;
+            margin-bottom: 5px;
+        }
+
+        .text-button {
+            width: 500px;
+            height: 100px;
+            font-size: 80px;
+            text-align: center;
+            background: none;
+            border: 2px solid white;
+            color: white;
+            border-radius: 20px;
+        }
+
+        .question-first {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            height: 100%;
+        }
+
+        .text2 {
+            font-size: 50px;
+            color: white;
+            font-family: sans-serif;
+            z-index: 2;
+        }
+
+        .text-PS {
+            font-size: 23px;
+            color: white;
+            font-family: sans-serif;
+            z-index: 2;
+        }
+
+        .div {
+            display: flex;
+            justify-content: center;
+        }
+
+        .heart {
+            font-size: 40px;
+            animation: floatUp 4s ease-out forwards;
+            z-index: 1;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .hearts-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .text5 {
+            font-size: 50px;
+            color: white;
+            font-family: sans-serif;
+            z-index: 2;
+            margin: 0;
+        }
+    </style>
+</head>
 <body>
 
     <div class="hearts-container"></div>
@@ -15,13 +101,78 @@
     <div class="div">
         <p class="text-PS">Для Ангелины</p>
     </div>
-    <div class="question-first">
-    </div>  
+    <div class="question-first"></div>  
 
+    <script>
+        const div = document.querySelector(".question-first");
 
+        const button = document.createElement("button");
+        button.classList.add("text-button");
+        button.textContent = "Да";
+        div.prepend(button);
 
+        const textsecond = document.createElement("p");
+        textsecond.classList.add("text2");
+        textsecond.textContent = "( ответ нет не принимается)";
+        div.prepend(textsecond);
 
-    <script src="index.js"></script>
+        const textFirst = document.createElement("p");
+        textFirst.classList.add("text");
+        textFirst.textContent = "Любишь сердечки ?";
+        div.prepend(textFirst);
+
+        button.addEventListener("click", clickHandler);
+
+        function clickHandler (event) {
+            button.remove();
+            textsecond.remove();
+            textFirst.remove();
+
+            const text3 = document.createElement("p");
+            text3.textContent = "Тогда они для тебя)";
+            text3.classList.add("text2");
+            div.prepend(text3);
+
+            const heartsContainer = document.querySelector('.hearts-container');
+
+            const heartInterval = setInterval(() => {
+                const heart = document.createElement("p");
+                heart.classList.add("heart");
+                heart.textContent = "💖";
+
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+
+                heart.style.position = "absolute";
+                heart.style.left = `${x}%`;
+                heart.style.top = `${y}%`;
+
+                setTimeout(() => {
+                    heart.remove();
+                }, 3000);
+
+                heartsContainer.appendChild(heart);
+            }, 50);
+
+            setTimeout(() => {
+                text3.remove();
+
+                const text4 = document.createElement("p");
+                text4.textContent = "Ты заслуживаешь счастья";
+                text4.classList.add("text5");
+
+                const text5 = document.createElement("p");
+                text5.textContent = " каждый день, не грусти!";
+                text5.classList.add("text5");
+
+                div.prepend(text5);
+                div.prepend(text4);
+
+                // optionally stop hearts:
+                // clearInterval(heartInterval);
+            }, 4000);
+        }
+    </script>
 </body>
-
 </html>
+
